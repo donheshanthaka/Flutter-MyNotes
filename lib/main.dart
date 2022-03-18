@@ -23,23 +23,6 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      
-    );
-  }
-}
-
-class LoginView extends StatefulWidget {
-  const LoginView({ Key? key }) : super(key: key);
-
-  @override
-  State<LoginView> createState() => _LoginViewState();
-}
-
-
-class _LoginViewState extends State<LoginView> {
 
   late final TextEditingController _email;
   late final TextEditingController _password;
@@ -58,6 +41,7 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
