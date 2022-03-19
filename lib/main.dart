@@ -49,3 +49,17 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+
+class verifyEmailView extends StatefulWidget {
+  const verifyEmailView({ Key? key }) : super(key: key);
+
+  @override
+  State<verifyEmailView> createState() => _verifyEmailViewState();
+}
+
+class _verifyEmailViewState extends State<verifyEmailView> {
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold();
+  }
+}
