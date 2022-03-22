@@ -1,3 +1,5 @@
+// A generic authentication provider to be used with more than one authentication provider such as google, facebook
+
 import 'package:mynotes/services/auth/auth_user.dart';
 
 abstract class AuthProvider {
@@ -14,4 +16,5 @@ abstract class AuthProvider {
 
   Future<void> logOut();
   Future<void> sendEmailVerification();
+  Future<void> initialize();
 }
