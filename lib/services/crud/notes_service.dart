@@ -2,24 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' show join;
+import 'crud_exceptions.dart';
 
-class DatabaseAlreadyOpenException implements Exception {}
-
-class UnableToGetDocumentsDirectory implements Exception {}
-
-class DatabaseIsNotOpen implements Exception {}
-
-class CloudNotDeleteUser implements Exception {}
-
-class UserAlreadyExists implements Exception {}
-
-class CouldNotFindUser implements Exception {}
-
-class CouldNotDeleteNote implements Exception {}
-
-class CouldNotFindNote implements Exception {}
-
-class CouldNotUpdateNote implements Exception {}
 
 class NotesService {
   Database? _db;
