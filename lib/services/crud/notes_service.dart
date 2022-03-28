@@ -9,10 +9,27 @@ import 'crud_exceptions.dart';
 class NotesService {
   Database? _db;
 
+  // This list is used as the local cache of the database
   List<DatabaseNote> _notes = [];
 
+  // The stream controller acts as the databse link to the interface 
   final _notesStreamController = StreamController<List<DatabaseNote>>.broadcast();
 
+  // This function will get databse user apon the user entering the notes view if that user already has been registered in the db, if not a new user will be created
+  Future<DatabaseUser> getOrCreateUser({required String email}) async {
+    try {
+      final user = await getUser(email: email);
+      return user;
+    } on CouldNotFindUser {
+     final createdUser = await createUser(email: email); 
+     return createdUser;
+    } catch (e) {
+      // this will help in debuggin the application if an exception is thrown and when we need to find more details about it, add a debug point to rethrow
+      rethrow;
+    }
+  }
+
+  // the cached notes function will be called when opening the database using the open function
   Future<void> _cachedNotes() async {
     // getting all the notes from the database
     final allNotes = await getAllNotes();
@@ -28,8 +45,10 @@ class NotesService {
   }) async {
     final db = _getDatabaseOrThrow();
 
+    // make sure notes exists
     await getNote(id: note.id);
 
+    // update DB
     final updatesCount = await db.update(noteTable, {
       textColumn: text,
       isSyncedWithColumn: 0,
@@ -38,7 +57,14 @@ class NotesService {
     if (updatesCount == 0) {
       throw CouldNotUpdateNote();
     } else {
-      return await getNote(id: note.id);
+      final updatedNote = await getNote(id: note.id);
+      // deleting the previous instance of the note from the local cache
+      _notes.removeWhere((note) => note.id == updatedNote.id);
+      // Adding the updated note to the local cache
+      _notes.add(updatedNote);
+      // updating the stream controller with the updated local cache
+      _notesStreamController.add(_notes);
+      return updatedNote;
     }
   }
 
@@ -61,14 +87,25 @@ class NotesService {
     if (notes.isEmpty){
       throw CouldNotFindNote();
     } else {
-      return DatabaseNote.fromRow(notes.first);
+      final note = DatabaseNote.fromRow(notes.first);
+      // deleting the old instance of the note from the local cache, if its already an existing note in the cache from the databse
+      _notes.removeWhere((notes) => note.id == id);
+      // then update the local cache with current retrieval of the note
+      _notes.add(note);
+      // the stream contoller is updated with the updated cache
+      _notesStreamController.add(_notes);
+      return note;
     }
 
   }
 
   Future<int> deleteAllNotes() async {
     final db = _getDatabaseOrThrow();
-    return await db.delete(noteTable);
+    final numberOfDeletions = await db.delete(noteTable);
+    // updating the notes list with an empty list and the adding that to the stream controller
+    _notes = [];
+    _notesStreamController.add(_notes);
+    return numberOfDeletions;
   }
 
   Future<void> deleteNote({required int id}) async {
@@ -80,6 +117,10 @@ class NotesService {
     );
     if (deleteCount == 0){
       throw CouldNotDeleteNote();
+    } else {
+      // delete the note from the list by matching the id and then update the stream controller
+      _notes.removeWhere((note) => note.id == id);
+      _notesStreamController.add(_notes);
     }
   }
 
@@ -107,6 +148,11 @@ class NotesService {
       text: text,
       isSyncedWithCloud: true,
     );
+
+    // Adding the newly created note to the notes list
+    _notes.add(note);
+    // Adding the updated notes list to the stream controller
+    _notesStreamController.add(_notes);
 
     return note;
   }
@@ -177,7 +223,7 @@ class NotesService {
 
       // create the note table
       await db.execute(createNoteTable);
-
+      await _cachedNotes();
     } on MissingPlatformDirectoryException {
       throw UnableToGetDocumentsDirectory();
     }
