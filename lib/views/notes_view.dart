@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
+import 'package:mynotes/services/crud/notes_service.dart';
 import '../constants/routes.dart';
 import '../enums/menu_action.dart';
 
@@ -11,6 +12,18 @@ class NotesView extends StatefulWidget {
 }
 
 class _NotesViewState extends State<NotesView> {
+
+  late final NotesService _notesService;
+  String get userEmail => AuthService.firebase().currentUser!.email!;
+
+  @override
+  void initState() {
+    // Initialize and open the database
+    _notesService = NotesService();
+    _notesService.open();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
