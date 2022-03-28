@@ -15,6 +15,9 @@ class NotesService {
   // The stream controller acts as the databse link to the interface 
   final _notesStreamController = StreamController<List<DatabaseNote>>.broadcast();
 
+  // Getter function to get all the notes within the stream controller
+  Stream<List<DatabaseNote>> get allNotes =>_notesStreamController.stream;
+
   // This function will get databse user apon the user entering the notes view if that user already has been registered in the db, if not a new user will be created
   Future<DatabaseUser> getOrCreateUser({required String email}) async {
     try {
