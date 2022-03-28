@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -7,6 +8,19 @@ import 'crud_exceptions.dart';
 
 class NotesService {
   Database? _db;
+
+  List<DatabaseNote> _notes = [];
+
+  final _notesStreamController = StreamController<List<DatabaseNote>>.broadcast();
+
+  Future<void> _cachedNotes() async {
+    // getting all the notes from the database
+    final allNotes = await getAllNotes();
+    // adding the collected notes to the private notes list
+    _notes = allNotes.toList();
+    // adding the collected to the notes stream controller to be broadcasted when needed
+    _notesStreamController.add(_notes);
+  }
 
   Future<DatabaseNote> updateNote({
     required DatabaseNote note,
