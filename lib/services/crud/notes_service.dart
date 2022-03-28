@@ -12,6 +12,11 @@ class NotesService {
   // This list is used as the local cache of the database
   List<DatabaseNote> _notes = [];
 
+  // Making the notes service a singleton
+  static final NotesService _shared = NotesService._sharedInstance();
+  NotesService._sharedInstance();
+  factory NotesService() => _shared;
+
   // The stream controller acts as the databse link to the interface 
   final _notesStreamController = StreamController<List<DatabaseNote>>.broadcast();
 
