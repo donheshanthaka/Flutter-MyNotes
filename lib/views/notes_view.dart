@@ -18,9 +18,8 @@ class _NotesViewState extends State<NotesView> {
 
   @override
   void initState() {
-    // Initialize and open the database
+    // Initialize the database
     _notesService = NotesService();
-    _notesService.open();
     super.initState();
   }
 
@@ -54,7 +53,28 @@ class _NotesViewState extends State<NotesView> {
         },)
       ],
       ),
-      body: const Text('Hello World'),
+      body: FutureBuilder(
+        future: _notesService.getOrCreateUser(email: userEmail),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState){
+            case ConnectionState.done:
+              return StreamBuilder(
+                stream: _notesService.allNotes,
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+
+                    case ConnectionState.waiting:
+                      return const Text('Waiting for all notes...');
+                    default:
+                      return const CircularProgressIndicator();
+                  }
+                },
+              );
+            default:
+              return const CircularProgressIndicator();
+          }
+        },
+      ),
     );
   }
 }
