@@ -43,6 +43,7 @@ class NotesService {
     required DatabaseNote note,
     required String text,
   }) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
 
     // make sure notes exists
@@ -69,6 +70,7 @@ class NotesService {
   }
 
   Future<Iterable<DatabaseNote>> getAllNotes() async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final notes = await db.query(noteTable);
 
@@ -76,6 +78,7 @@ class NotesService {
   }
 
   Future<DatabaseNote> getNote({required int id}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final notes = await db.query(
       noteTable,
@@ -100,6 +103,7 @@ class NotesService {
   }
 
   Future<int> deleteAllNotes() async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final numberOfDeletions = await db.delete(noteTable);
     // updating the notes list with an empty list and the adding that to the stream controller
@@ -109,6 +113,7 @@ class NotesService {
   }
 
   Future<void> deleteNote({required int id}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final deleteCount = await db.delete(
       noteTable,
@@ -125,6 +130,7 @@ class NotesService {
   }
 
   Future<DatabaseNote> createNote({required DatabaseUser owner}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
 
     // make sure owner exists in the database with the correct id
@@ -158,6 +164,7 @@ class NotesService {
   }
 
   Future<DatabaseUser> getUser({required String email}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
 
     final results = await db.query(
@@ -175,6 +182,7 @@ class NotesService {
   }
 
   Future<DatabaseUser> createUser({required String email}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final results = await db.query(
       userTable,
@@ -196,6 +204,7 @@ class NotesService {
   // when calling this function it will either delete the user or throw an exception, the reason why we are not handling the exception here is that,
   // this is a service function and catching execptions should be done at the call sight of this function
   Future<void> deleteUser({required String email}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final deletedCount = await db.delete(
       userTable,
