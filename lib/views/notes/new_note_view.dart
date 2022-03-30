@@ -87,28 +87,7 @@ class _NewNoteViewState extends State<NewNoteView> {
       appBar: AppBar(
         title: const Text('New Note'),
       ),
-      body: FutureBuilder(
-        future: createNewNote(),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState){
-            case ConnectionState.done:
-            // saving the created snapshot data to the local note variable of type DatabaseNote
-            _note = snapshot.data as DatabaseNote;
-            _setupTextControllerListener();
-              return TextField(
-                // Using the text controller created by us to get the user input from the text field
-                controller: _textController,
-                keyboardType: TextInputType.multiline,
-                // Making the text field multi line
-                maxLines: null,
-                decoration: const InputDecoration(
-                  hintText: 'Start typing your note...',
-                ),
-              );
-            default:
-              return const CircularProgressIndicator();
-          }
-        }),
+      body: const Text('Write your note here...'),
     );
   }
 }

@@ -20,6 +20,8 @@ class NotesService {
   // The stream controller acts as the databse link to the interface 
   final _notesStreamController = StreamController<List<DatabaseNote>>.broadcast();
 
+  //late final StreamController<List<DatabaseNote>> _notesStreamController;
+
   // Getter function to get all the notes within the stream controller
   Stream<List<DatabaseNote>> get allNotes =>_notesStreamController.stream;
 
@@ -244,7 +246,7 @@ class NotesService {
       _db = db;
 
       // create the user table
-      await db.execute(createUserTabl);
+      await db.execute(createUserTable);
 
       // create the note table
       await db.execute(createNoteTable);
@@ -338,7 +340,7 @@ const userIdColumn = 'user_id';
 const textColumn = 'text';
 const isSyncedWithColumn = 'is_synced_with_cloud';
 
-const createUserTabl = '''
+const createUserTable = '''
         CREATE TABLE IF NOT EXISTS "user" (
         "id"	INTEGER NOT NULL,
         "email"	TEXT NOT NULL UNIQUE,
