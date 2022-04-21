@@ -75,7 +75,10 @@ class _NotesViewState extends State<NotesView> {
                             final note = allNotes[index];
                             return ListTile(
                               title: Text(
-                                note.text
+                                note.text,
+                                maxLines: 1,
+                                softWrap: true,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             );
                           },
