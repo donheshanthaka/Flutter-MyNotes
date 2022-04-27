@@ -40,7 +40,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
 
   }
 
-  Future<DatabaseNote> createNewNote() async {
+  Future<DatabaseNote> createOrGetExistingNote() async {
     final existingNote = _note;
     // Checked using the negated value of the overriden equality operator
     if (existingNote != null) {
@@ -88,7 +88,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
         title: const Text('New Note'),
       ),
       body: FutureBuilder(
-        future: createNewNote(),
+        future: createOrGetExistingNote(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
